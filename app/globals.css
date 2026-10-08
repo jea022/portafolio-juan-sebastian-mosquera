@@ -12,8 +12,10 @@
   --font-mono: var(--font-space-mono), monospace;
 }
 
+/* La imagen la pone `layout.tsx` como variable inline (`--bg-image`), con el basePath de
+   GitHub Pages ya resuelto: un `url()` de CSS puro no puede leer `process.env`. */
 body {
-  background: var(--color-black) url("/textures/fondo-textura.jpg") center / cover no-repeat fixed;
+  background: var(--color-black) var(--bg-image) center / cover no-repeat fixed;
   color: var(--color-bone);
   font-family: var(--font-body);
 }

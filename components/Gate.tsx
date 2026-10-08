@@ -2,6 +2,7 @@
 
 import confetti from "canvas-confetti";
 import Image from "next/image";
+import { withBasePath } from "@/lib/utils";
 
 // Colores de nuestra paleta para el confeti (PLAN.md, pasada 4).
 const CONFETTI_COLORS = ["#e70f0e", "#e1decc", "#474145"];
@@ -60,14 +61,14 @@ export function Gate({ onReveal }: { onReveal: () => void }) {
 
           <div className="mt-6 grid grid-cols-[auto_1fr] gap-5">
             <div className="relative size-48 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
-              <Image src="/expediente-foto.jpg" alt="Juan Sebastian Mosquera" fill sizes="256px" className="object-cover" />
+              <Image src={withBasePath("/expediente-foto.jpg")} alt="Juan Sebastian Mosquera" fill sizes="256px" className="object-cover" />
             </div>
 
             <div className="rounded-lg border-2 border-black/70 p-4">
               <p className="font-mono text-xs uppercase tracking-widest text-black/60">Sobre mí</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/classified-stamp.png"
+                src={withBasePath("/classified-stamp.png")}
                 alt="Sello de clasificado"
                 className="mx-auto mt-2 h-28 w-auto object-contain mix-blend-multiply sm:h-32"
               />

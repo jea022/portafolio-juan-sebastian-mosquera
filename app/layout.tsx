@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Space_Mono, Syne } from "next/font/google";
+import { withBasePath } from "@/lib/utils";
 import "./globals.css";
 
 // Tipografía confirmada (PLAN.md, pasadas 9 y 10): Syne para títulos,
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${syne.variable} ${bricolage.variable} ${spaceMono.variable}`}>
-      <body>{children}</body>
+      <body style={{ "--bg-image": `url(${withBasePath("/textures/fondo-textura.jpg")})` } as React.CSSProperties}>
+        {children}
+      </body>
     </html>
   );
 }

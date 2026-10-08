@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import Image from "next/image";
 import { PROJECTS } from "@/lib/portfolio";
+import { withBasePath } from "@/lib/utils";
 import { Tile } from "./Tile";
 
 // Elementos del abanico: una tarjeta por proyecto/cliente (PLAN.md, pasada 29), la de perfil
@@ -54,7 +55,7 @@ export function FanTile({
         <>
           {item.logo ? (
             <>
-              <Image src={item.logo} alt={item.label} fill sizes="188px" className="absolute inset-0 -z-10 object-cover" />
+              <Image src={withBasePath(item.logo)} alt={item.label} fill sizes="188px" className="absolute inset-0 -z-10 object-cover" />
               <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/60 via-black/5 to-transparent" />
             </>
           ) : (
@@ -65,7 +66,7 @@ export function FanTile({
       {item.kind === "profile" && (
         <>
           <Image
-            src="/perfil-foto.jpg"
+            src={withBasePath("/perfil-foto.jpg")}
             alt=""
             fill
             sizes="(min-width: 640px) 188px, 56vw"
@@ -79,7 +80,7 @@ export function FanTile({
       )}
       {item.kind === "contact" && (
         <>
-          <Image src="/logos/contacto.png" alt="Contacto" fill sizes="188px" className="absolute inset-0 -z-10 object-cover" />
+          <Image src={withBasePath("/logos/contacto.png")} alt="Contacto" fill sizes="188px" className="absolute inset-0 -z-10 object-cover" />
           <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/60 via-black/5 to-transparent" />
           <span className="font-mono text-xs uppercase tracking-widest text-bone">Contacto</span>
         </>
