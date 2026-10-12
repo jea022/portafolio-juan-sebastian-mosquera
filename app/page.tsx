@@ -25,12 +25,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* `mt-4`: el cuadrado rojo detrás del título se extiende un poco más abajo que su
-            contenedor (`inset-y-[-12%]`); sin este margen, en celular queda pegado al nombre.
+        {/* `mt-10` en el breakpoint base: el cuadrado rojo detrás del título se extiende un
+            poco más abajo que su contenedor (`inset-y-[-12%]`); el cliente pidió más aire acá
+            además de separarlo de que no quedara pegado al nombre (antes `mt-4`). En `sm:` hay
+            más espacio natural por el padding mayor de la sección, así que vuelve a `sm:mt-4`.
             `flex-col` en el breakpoint base: en celulares angostos el nombre completo y el rol
             no entran uno al lado del otro y quedaban pegados sin espacio ("MOSQUERACOMMUNITY");
             en `sm:` sí entran en una fila con `justify-between` como antes. */}
-        <div className="mt-4 flex flex-col gap-1 font-mono text-xs uppercase tracking-widest sm:flex-row sm:justify-between sm:gap-0">
+        <div className="mt-10 flex flex-col gap-1 font-mono text-xs uppercase tracking-widest sm:mt-4 sm:flex-row sm:justify-between sm:gap-0">
           <span>Juan Sebastian Mosquera</span>
           <span>Community manager</span>
         </div>

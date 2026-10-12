@@ -38,8 +38,13 @@ export function Gate({ onReveal }: { onReveal: () => void }) {
   return (
     // Sin fondo propio: deja ver la misma textura del body (`globals.css`), no un negro plano.
     // Relleno lateral generoso para que la pestaña que sobresale no quede pegada al borde.
-    <div className="fixed inset-0 z-[200] grid place-items-center overflow-y-auto px-10 py-10 sm:px-16">
-      <div className="relative w-[min(94vw,560px)] -rotate-1">
+    <div className="fixed inset-0 z-[200] grid grid-cols-1 place-items-center overflow-y-auto px-10 py-10 sm:px-16">
+      {/* Antes era `w-[min(94vw,560px)]`: ese ancho se calcula sobre el viewport entero, sin
+          restarle el padding lateral del contenedor (`px-10`/`sm:px-16`), así que la suma de
+          ambos superaba el ancho real de la pantalla y el navegador agregaba scroll horizontal
+          (no solo un recorte visual). `w-full` dentro de un grid de una sola columna ocupa
+          exactamente el espacio que deja el padding, sin salirse nunca del viewport. */}
+      <div className="relative w-full max-w-[35rem] -rotate-1">
         {/* Pestaña lateral, como la solapa de una carpeta de expediente. */}
         <div
           aria-hidden
@@ -50,28 +55,29 @@ export function Gate({ onReveal }: { onReveal: () => void }) {
           </span>
         </div>
 
-        {/* La ficha. */}
-        <div className="relative rounded-2xl border-2 border-black bg-bone p-8 text-black shadow-2xl sm:p-10">
+        {/* La ficha. Padding más chico en el breakpoint base (`p-5`): al corregir el ancho de
+            la ficha (ver más arriba) quedó un poco más angosta que antes, y este padding más
+            chico le devuelve ancho de contenido a la foto/título/botón. */}
+        <div className="relative rounded-2xl border-2 border-black bg-bone p-5 text-black shadow-2xl sm:p-10">
           <Paperclip className="absolute -top-6 left-1/2 h-12 w-12 -translate-x-1/2 -rotate-12 text-black/70" />
 
           <div>
-            {/* `text-2xl` en el breakpoint base: a `text-3xl` la palabra "Expediente" no entraba
-                en el ancho de la ficha en celulares angostos y se salía por el borde derecho. */}
-            <p className="font-display text-2xl uppercase leading-none sm:text-4xl">Expediente</p>
-            <p className="font-display text-2xl uppercase leading-none sm:text-4xl">Del creador</p>
+            {/* `text-xl` en el breakpoint base: a tamaños mayores la palabra "Expediente" no
+                entraba en el ancho real de la ficha en celulares angostos. */}
+            <p className="font-display text-xl uppercase leading-none sm:text-4xl">Expediente</p>
+            <p className="font-display text-xl uppercase leading-none sm:text-4xl">Del creador</p>
           </div>
 
           {/* `minmax(0,1fr)` (no `1fr` solo) deja que esta columna se achique por debajo del
               ancho mínimo de su contenido: sin eso, el botón/sello empujaban la ficha fuera
-              de la pantalla en celulares angostos. `size-32` en el breakpoint base es el
-              máximo que deja esa columna con ancho suficiente para que "Revelar portafolio"
-              no se corte (medido con scrollWidth del botón: a `size-36` ya no entra). */}
-          <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-5">
-            <div className="relative size-32 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
+              de la pantalla en celulares angostos. `gap-3` y el `p-3` de la caja de "Sobre mí"
+              (en vez de `gap-5`/`p-4`) le dejan más ancho de contenido a esa columna en mobile. */}
+          <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-3 sm:gap-5">
+            <div className="relative size-28 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
               <Image src={withBasePath("/expediente-foto.jpg")} alt="Juan Sebastian Mosquera" fill sizes="256px" className="object-cover" />
             </div>
 
-            <div className="min-w-0 rounded-lg border-2 border-black/70 p-4">
+            <div className="min-w-0 rounded-lg border-2 border-black/70 p-3 sm:p-4">
               <p className="font-mono text-xs uppercase tracking-widest text-black/60">Sobre mí</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -111,7 +117,9 @@ function RevealButton({ onReveal }: { onReveal: () => void }) {
         fireConfetti({ x: (r.left + r.width / 2) / window.innerWidth, y: (r.top + r.height / 2) / window.innerHeight });
         onReveal();
       }}
-      className="mt-4 w-full rounded-xl bg-crimson py-3 font-mono text-sm uppercase tracking-widest text-black transition-transform hover:-translate-y-0.5"
+      // `tracking-wide` (no `tracking-widest`) en el breakpoint base: con el letter-spacing más
+      // ancho, la palabra "Portafolio" no entraba en el ancho real de la columna en celulares.
+      className="mt-4 w-full rounded-xl bg-crimson py-3 font-mono text-sm uppercase tracking-wide text-black transition-transform hover:-translate-y-0.5 sm:tracking-widest"
     >
       Revelar portafolio
     </button>
