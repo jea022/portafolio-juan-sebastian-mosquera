@@ -63,10 +63,11 @@ export function Gate({ onReveal }: { onReveal: () => void }) {
 
           {/* `minmax(0,1fr)` (no `1fr` solo) deja que esta columna se achique por debajo del
               ancho mínimo de su contenido: sin eso, el botón/sello empujaban la ficha fuera
-              de la pantalla en celulares angostos. El tamaño de la foto también baja mucho
-              en el breakpoint base (sin `sm:`), que es el único que ven los celulares reales. */}
+              de la pantalla en celulares angostos. `size-32` en el breakpoint base es el
+              máximo que deja esa columna con ancho suficiente para que "Revelar portafolio"
+              no se corte (medido con scrollWidth del botón: a `size-36` ya no entra). */}
           <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-5">
-            <div className="relative size-24 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
+            <div className="relative size-32 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
               <Image src={withBasePath("/expediente-foto.jpg")} alt="Juan Sebastian Mosquera" fill sizes="256px" className="object-cover" />
             </div>
 
