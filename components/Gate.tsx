@@ -55,22 +55,28 @@ export function Gate({ onReveal }: { onReveal: () => void }) {
           <Paperclip className="absolute -top-6 left-1/2 h-12 w-12 -translate-x-1/2 -rotate-12 text-black/70" />
 
           <div>
-            <p className="font-display text-3xl uppercase leading-none sm:text-4xl">Expediente</p>
-            <p className="font-display text-3xl uppercase leading-none sm:text-4xl">Del creador</p>
+            {/* `text-2xl` en el breakpoint base: a `text-3xl` la palabra "Expediente" no entraba
+                en el ancho de la ficha en celulares angostos y se salía por el borde derecho. */}
+            <p className="font-display text-2xl uppercase leading-none sm:text-4xl">Expediente</p>
+            <p className="font-display text-2xl uppercase leading-none sm:text-4xl">Del creador</p>
           </div>
 
-          <div className="mt-6 grid grid-cols-[auto_1fr] gap-5">
-            <div className="relative size-48 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
+          {/* `minmax(0,1fr)` (no `1fr` solo) deja que esta columna se achique por debajo del
+              ancho mínimo de su contenido: sin eso, el botón/sello empujaban la ficha fuera
+              de la pantalla en celulares angostos. El tamaño de la foto también baja mucho
+              en el breakpoint base (sin `sm:`), que es el único que ven los celulares reales. */}
+          <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-5">
+            <div className="relative size-24 overflow-hidden rounded-lg border-2 border-black/70 sm:size-64">
               <Image src={withBasePath("/expediente-foto.jpg")} alt="Juan Sebastian Mosquera" fill sizes="256px" className="object-cover" />
             </div>
 
-            <div className="rounded-lg border-2 border-black/70 p-4">
+            <div className="min-w-0 rounded-lg border-2 border-black/70 p-4">
               <p className="font-mono text-xs uppercase tracking-widest text-black/60">Sobre mí</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={withBasePath("/classified-stamp.png")}
                 alt="Sello de clasificado"
-                className="mx-auto mt-2 h-28 w-auto object-contain mix-blend-multiply sm:h-32"
+                className="mx-auto mt-2 h-auto max-h-28 w-full object-contain mix-blend-multiply sm:max-h-32"
               />
               <RevealButton onReveal={onReveal} />
             </div>

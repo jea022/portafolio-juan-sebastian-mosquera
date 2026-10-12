@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CONTACT, PROJECTS } from "@/lib/portfolio";
+import { CONTACT, CONTACT_COLUMNS, PROJECTS } from "@/lib/portfolio";
 import { CONTACT_TONE, ContactIcon } from "./ContactIcon";
 import { LinkPreview } from "./LinkPreview";
 
@@ -172,48 +172,68 @@ function ModalBody({ item }: { item: FanItem }) {
       <p className="max-w-md font-body text-base text-bone/80">
         Para proyectos, marcas o eventos que quieras contar en video. Elegí el canal que prefieras.
       </p>
-      {/* `grid-rows-3` normal reparte el alto por igual entre filas (las estira a todas al
-          tamaño de la más alta, el mapa). Con filas `auto` cada una mide solo lo que necesita. */}
-      <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:grid-flow-col sm:[grid-template-rows:repeat(3,auto)]">
-      {CONTACT.map((row) => {
-        // Ubicación tiene su propia tarjeta (ciudad + hora local), en vez de la fila con ícono.
-        if (row.key === "ubicacion" && row.value) {
-          return (
-            <li key={row.key}>
-              <LocationCard city={row.value} />
-            </li>
-          );
-        }
-        const tone = CONTACT_TONE[row.key];
-        return (
-          <li key={row.key} className="flex items-center gap-4 self-start rounded-2xl border-2 border-bone/30 p-4">
-            <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${tone.bg} ${tone.icon}`}>
-              <ContactIcon name={row.key} />
-            </span>
-            <span className="flex flex-col">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-bone/60">{row.label}</span>
-              {row.value ? (
-                row.href ? (
-                  PREVIEWABLE.has(row.key) ? (
-                    <LinkPreview url={row.href} className="font-body text-base underline-offset-4 hover:underline">
-                      {row.value}
-                    </LinkPreview>
-                  ) : (
-                    <a href={row.href} className="font-body text-base underline-offset-4 hover:underline">
-                      {row.value}
-                    </a>
-                  )
-                ) : (
-                  <span className="font-body text-base">{row.value}</span>
-                )
-              ) : (
-                <span className="font-mono text-xs uppercase text-crimson">Pendiente</span>
-              )}
-            </span>
-          </li>
-        );
-      })}
+
+      {/* Móvil: una sola lista en el orden de CONTACT. Sin LinkPreview: esa tarjeta flotante
+          depende del hover, que no existe en celular, y ahí solo estorbaba. */}
+      <ul className="mt-6 grid gap-3 sm:hidden">
+        {CONTACT.map((row) => (
+          <ContactRow key={row.key} row={row} preview={false} />
+        ))}
       </ul>
+
+      {/* Escritorio: 2 columnas armadas a mano con CONTACT_COLUMNS (primera solo correo +
+          mapa, segunda el resto), no por grid-flow-column, que repartía parejo por conteo
+          de filas en vez de por el agrupamiento que pidió el cliente. */}
+      <div className="mt-6 hidden gap-3 sm:grid sm:grid-cols-2">
+        {CONTACT_COLUMNS.map((column, i) => (
+          <ul key={i} className="flex flex-col gap-3">
+            {column.map((key) => {
+              const row = CONTACT.find((c) => c.key === key);
+              if (!row) return null;
+              return <ContactRow key={row.key} row={row} preview={PREVIEWABLE.has(row.key)} />;
+            })}
+          </ul>
+        ))}
+      </div>
     </>
+  );
+}
+
+function ContactRow({ row, preview }: { row: (typeof CONTACT)[number]; preview: boolean }) {
+  // Ubicación tiene su propia tarjeta (ciudad + hora local), en vez de la fila con ícono.
+  if (row.key === "ubicacion" && row.value) {
+    return (
+      <li>
+        <LocationCard city={row.value} />
+      </li>
+    );
+  }
+  const tone = CONTACT_TONE[row.key];
+  return (
+    <li className="flex items-center gap-4 self-start rounded-2xl border-2 border-bone/30 p-4">
+      <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${tone.bg} ${tone.icon}`}>
+        <ContactIcon name={row.key} />
+      </span>
+      <span className="flex flex-col">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-bone/60">{row.label}</span>
+        {row.value ? (
+          row.href ? (
+            preview ? (
+              <LinkPreview url={row.href} className="font-body text-base underline-offset-4 hover:underline">
+                {row.value}
+              </LinkPreview>
+            ) : (
+              <a href={row.href} className="font-body text-base underline-offset-4 hover:underline">
+                {row.value}
+              </a>
+            )
+          ) : (
+            <span className="font-body text-base">{row.value}</span>
+          )
+        ) : (
+          <span className="font-mono text-xs uppercase text-crimson">Pendiente</span>
+        )}
+      </span>
+    </li>
   );
 }

@@ -248,15 +248,15 @@ export const PROJECTS: Project[] = [
 // Datos de contacto reales del cliente. Los que falten quedan en null y el modal muestra "Pendiente".
 export type ContactKey = "correo" | "telefono" | "whatsapp" | "linkedin" | "instagram" | "ubicacion";
 
-// Orden pensado para la grilla de 2 columnas x 3 filas (`grid-flow-col`, Explorer.tsx):
-// se llena la primera columna de arriba a abajo y después la segunda. Correo y WhatsApp
-// quedan en la misma columna, uno debajo del otro (pedido del cliente); el mapa se deja
-// último para que siga anclado abajo a la izquierda, como ya estaba.
+// Orden de este array = orden en mobile (una sola columna, `Explorer.tsx` lo recorre tal
+// cual). El de escritorio (2 columnas) ya no depende de este orden: se arma aparte, a mano,
+// filtrando por `key` (ver `CONTACT_COLUMNS` más abajo), porque el cliente pidió una
+// repartición pareja distinta a la que sale de simplemente partir este array al medio.
 export const CONTACT: { label: string; key: ContactKey; value: string | null; href: string | null }[] = [
   { label: "Correo", key: "correo", value: "mosquera0107@gmail.com", href: "mailto:mosquera0107@gmail.com" },
-  { label: "WhatsApp", key: "whatsapp", value: "+57 350 4391876", href: "https://wa.me/573504391876" },
-  { label: "Ubicación", key: "ubicacion", value: "Cali, Colombia", href: null },
   { label: "Teléfono", key: "telefono", value: "+57 350 4391876", href: "tel:+573504391876" },
+  { label: "Ubicación", key: "ubicacion", value: "Cali, Colombia", href: null },
+  { label: "WhatsApp", key: "whatsapp", value: "+57 350 4391876", href: "https://wa.me/573504391876" },
   {
     label: "LinkedIn",
     key: "linkedin",
@@ -264,4 +264,10 @@ export const CONTACT: { label: string; key: ContactKey; value: string | null; hr
     href: "https://www.linkedin.com/in/sebasti%C3%A1n-mosquera-816367417/",
   },
   { label: "Instagram", key: "instagram", value: "@sebas.107", href: "https://www.instagram.com/sebas.107" },
+];
+
+// Columnas del contacto en escritorio: primera solo correo + mapa, segunda el resto.
+export const CONTACT_COLUMNS: ContactKey[][] = [
+  ["correo", "ubicacion"],
+  ["telefono", "whatsapp", "linkedin", "instagram"],
 ];
