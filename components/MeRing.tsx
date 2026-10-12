@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 // Anillo circular de la referencia con una flecha y "ME" en el centro. Al pasar el cursor por una
 // tarjeta, el centro muestra su nombre (`label`) y la flecha gira hacia ella (`angle`,
 // el mismo ángulo polar con el que CardFan posiciona cada tarjeta en el arco).
@@ -30,7 +32,14 @@ export function MeRing({ label, angle = 270 }: { label?: string | null; angle?: 
           <path d="M12 19V5" />
           <path d="M6 11l6-6 6 6" />
         </svg>
-        <span className="text-sm leading-tight">{label ?? "ME"}</span>
+        <span
+          className={cn(
+            "leading-tight",
+            (label?.length ?? 0) > 30 ? "text-[9px]" : (label?.length ?? 0) > 18 ? "text-xs" : "text-sm",
+          )}
+        >
+          {label ?? "ME"}
+        </span>
       </div>
     </div>
   );

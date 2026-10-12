@@ -20,7 +20,12 @@ export function Tile({
     <button
       type="button"
       className={cn(
-        "relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 text-left transition-transform duration-300 hover:z-30 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone",
+        // `isolate` crea un contexto de apilamiento propio aunque no haya ningún `transform`
+        // puesto (el abanico de escritorio sí pone uno, rotate(), y por eso ahí la imagen de
+        // fondo con -z-10 quedaba contenida "por accidente"; el carrusel de celular no rota
+        // sus tarjetas, así que sin esto la imagen se pintaba detrás del color de fondo del
+        // tono en vez de solo detrás del texto).
+        "relative isolate flex flex-col justify-between overflow-hidden rounded-2xl p-4 text-left transition-transform duration-300 hover:z-30 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bone",
         CARD_TONES[tone % CARD_TONES.length],
         className,
       )}
