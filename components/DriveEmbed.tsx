@@ -8,8 +8,17 @@ import { cn } from "@/lib/utils";
 // Drive (`/preview`) para video, imagen y PDF. Es el único método que se comprobó que
 // funciona sin pedir cuenta de Google (la miniatura `lh3` fallaba sin sesión iniciada;
 // PLAN.md, pasada 29).
+//
+// Pasada 61: el visor de Drive tiene un tope de reproducciones anónimas por día; superado,
+// bloquea el video para todo visitante sin sesión. Los videos se migran a YouTube (no
+// listado) de a uno (`asset.youtubeId`, `lib/portfolio.ts`); mientras no tengan ese campo
+// siguen embebidos desde Drive. `youtube-nocookie.com` evita cookies de seguimiento hasta
+// que se reproduce.
 export function DriveEmbed({ asset, className }: { asset: Asset; className?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const src = asset.youtubeId
+    ? `https://www.youtube-nocookie.com/embed/${asset.youtubeId}`
+    : `https://drive.google.com/file/d/${asset.driveId}/preview`;
 
   // `touch-action: pan-y` (ver abajo) no alcanza solo en iOS Safari: no respeta de forma
   // confiable el touch-action del padre en iframes de otro origen, así que el visor de Drive se
@@ -23,7 +32,7 @@ export function DriveEmbed({ asset, className }: { asset: Asset; className?: str
     <div className="relative">
       <iframe
         ref={iframeRef}
-        src={`https://drive.google.com/file/d/${asset.driveId}/preview`}
+        src={src}
         title={asset.label}
         allow="autoplay; fullscreen"
         allowFullScreen

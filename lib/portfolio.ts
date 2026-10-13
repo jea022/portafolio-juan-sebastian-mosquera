@@ -15,6 +15,12 @@ export type Asset = {
   // cuando no se especifica. Solo hace falta marcar "horizontal" si algún archivo nuevo lo es.
   // No aplica a "pdf" (son documentos de varias páginas, no una sola proporción).
   orientation?: "vertical" | "horizontal";
+  // Migración de pasada 61: el visor público de Drive (`/preview`) tiene un tope de
+  // reproducciones anónimas por día; superado, bloquea el video para todo visitante sin
+  // sesión de Google hasta que se resetea solo. Los "video" se migran a YouTube (no listado),
+  // que no tiene ese límite. `youtubeId` manda sobre `driveId` cuando está presente
+  // (DriveEmbed.tsx); mientras falte, ese video sigue embebido desde Drive.
+  youtubeId?: string;
 };
 
 // Texto del caso de estudio de cada proyecto (pasada 38). Contenido base: documento del cliente
@@ -75,9 +81,14 @@ export const PROJECTS: Project[] = [
     ringLabel: "Copa\nInternacional\nde Voleibol",
     logo: "/logos/copa-voleibol.png",
     assets: [
+      // Pendiente real: el short subido a YouTube (GK9C-8XSvts) existe y se ve bien en YouTube
+      // mismo, pero el embed da "video no disponible" (error 153) de forma persistente —
+      // probablemente "no permitir insertar" o un bloqueo de Content ID por música. Revisar en
+      // YouTube Studio y volver a agregar `youtubeId` cuando esté resuelto; mientras tanto
+      // sigue sirviendo desde Drive, como el resto de assets sin este campo.
       { kind: "video", driveId: "1lhzjxU9j06rBCHg5bAKisMDtfJiHUj9v", label: "Recap del último día" },
-      { kind: "video", driveId: "1-_LHbOEXun7hWo_w5x9phjwpxRSPuXGZ", label: "Entrevista al coach Ramval" },
-      { kind: "video", driveId: "16T_5t7zyTFF6P3kCYdy_ZJW7rzFBSdtS", label: "Entrevista a jugadores de Toluca" },
+      { kind: "video", driveId: "1-_LHbOEXun7hWo_w5x9phjwpxRSPuXGZ", label: "Entrevista al coach Ramval", youtubeId: "CKQQRmY5NEk" },
+      { kind: "video", driveId: "16T_5t7zyTFF6P3kCYdy_ZJW7rzFBSdtS", label: "Entrevista a jugadores de Toluca", youtubeId: "To3NXwjUEVc" },
       { kind: "image", driveId: "1peqgE-FCaSTBVyRyKogGP3oN2ZV2xIb0", label: "Historia de Instagram" },
       { kind: "image", driveId: "18dkwfzV7_orqYh0p_uFzqnqJjpkyAd2y", label: "Carrusel publicado (18,8 mil alcance)" },
       { kind: "image", driveId: "1hP9e1XvxBSlKkZQTx9QOZuPsIpQNkKoN", label: "Flyer: próxima edición en Cartagena" },
@@ -147,8 +158,8 @@ export const PROJECTS: Project[] = [
     title: "Ceviche Co Xpress (USA)",
     logo: "/logos/ceviche-co-xpress.png",
     assets: [
-      { kind: "video", driveId: "1DiqLnqUhjjqI5cmCrOqJjnSpGvgaoq6u", label: "Video (inglés)" },
-      { kind: "video", driveId: "1hhz2DyR5eou7OC28O1JcQH2D7U8jSLup", label: "Video (original)" },
+      { kind: "video", driveId: "1DiqLnqUhjjqI5cmCrOqJjnSpGvgaoq6u", label: "Video (inglés)", youtubeId: "XGr5ZrFqCug" },
+      { kind: "video", driveId: "1hhz2DyR5eou7OC28O1JcQH2D7U8jSLup", label: "Video (original)", youtubeId: "26GY7p6igZM" },
     ],
     brief: {
       challenge:
@@ -175,7 +186,7 @@ export const PROJECTS: Project[] = [
     slug: "protein-club",
     title: "Protein Club",
     logo: "/logos/protein-club.png",
-    assets: [{ kind: "video", driveId: "1QTUwc358OsSpF-7Dgg_0hHlJGzp21Y_b", label: "Así se prepara un burrito" }],
+    assets: [{ kind: "video", driveId: "1QTUwc358OsSpF-7Dgg_0hHlJGzp21Y_b", label: "Así se prepara un burrito", youtubeId: "1FMgTGG8S0g" }],
     brief: {
       challenge:
         "Protein Club, su local de alimentación saludable y bebidas funcionales en Arbolatta Mall, lanza productos de edición limitada con frecuencia — un batido, un sándwich, una opción nueva del menú — y necesitaba que cada lanzamiento llegara a un público fitness que decide rápido qué probar. El contenido tenía que transmitir sabor y frescura en segundos, sin perder de vista el valor nutricional que es la razón de ser de la marca.",
@@ -193,8 +204,8 @@ export const PROJECTS: Project[] = [
     title: "Vlogs Personales",
     logo: "/logos/vlogs-personales.png",
     assets: [
-      { kind: "video", driveId: "1JgyIbV2-a8zrUom7gLM_b_VUQr3S6Md7", label: "Gimnasio" },
-      { kind: "video", driveId: "1KvyZhilmOqTuzzFp8T4e59KvsHg9OMKR", label: "Viaje" },
+      { kind: "video", driveId: "1JgyIbV2-a8zrUom7gLM_b_VUQr3S6Md7", label: "Gimnasio", youtubeId: "qiPg2D0AmYQ" },
+      { kind: "video", driveId: "1KvyZhilmOqTuzzFp8T4e59KvsHg9OMKR", label: "Viaje", youtubeId: "jy81-qewkOc" },
     ],
     brief: {
       challenge:
@@ -213,8 +224,8 @@ export const PROJECTS: Project[] = [
     title: "Varas Grill (USA)",
     logo: "/logos/varas-grill.png",
     assets: [
-      { kind: "video", driveId: "1RIByZXFB8veFXLQH8h3DQF_LLAqmAj_I", label: "Entrevista" },
-      { kind: "video", driveId: "1DBBBhRTkvk_3KLKKXjIv7fUY6v3-uU1p", label: "Invitación al evento" },
+      { kind: "video", driveId: "1RIByZXFB8veFXLQH8h3DQF_LLAqmAj_I", label: "Entrevista", youtubeId: "wgav7xqpIp8" },
+      { kind: "video", driveId: "1DBBBhRTkvk_3KLKKXjIv7fUY6v3-uU1p", label: "Invitación al evento", youtubeId: "7jvoYt_g0r4" },
     ],
     brief: {
       challenge:
@@ -232,8 +243,8 @@ export const PROJECTS: Project[] = [
     title: "Light Reaction Jiu Jitsu",
     logo: "/logos/light-reaction.png",
     assets: [
-      { kind: "video", driveId: "1eCtu0A8WK65aKzVeRfwlprHrLO0Fvf88", label: "3 mitos sobre el BJJ" },
-      { kind: "video", driveId: "1VTIev_sS-Iyd7u4Y8cI9I5ObiwNDF3b-", label: "Así se entrena" },
+      { kind: "video", driveId: "1eCtu0A8WK65aKzVeRfwlprHrLO0Fvf88", label: "3 mitos sobre el BJJ", youtubeId: "9VopCK0nNL0" },
+      { kind: "video", driveId: "1VTIev_sS-Iyd7u4Y8cI9I5ObiwNDF3b-", label: "Así se entrena", youtubeId: "ukU5yZzyG_g" },
     ],
     brief: {
       challenge:
