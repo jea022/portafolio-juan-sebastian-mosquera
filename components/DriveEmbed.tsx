@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import type { Asset } from "@/lib/portfolio";
+import { cn } from "@/lib/utils";
 
 // Embebe un archivo de Drive directo, sin subirlo a otro lado: el mismo visor público de
 // Drive (`/preview`) para video, imagen y PDF. Es el único método que se comprobó que
@@ -18,7 +19,10 @@ export function DriveEmbed({ asset, className }: { asset: Asset; className?: str
         title={asset.label}
         allow="autoplay; fullscreen"
         allowFullScreen
-        className={className ?? "aspect-video w-full rounded-xl"}
+        // `touch-pan-y`: sin esto, al arrastrar el dedo sobre el iframe en mobile el visor de
+        // Drive decide si consume el gesto antes de dejarlo pasar, y la página se traba sin
+        // scrollear (reportado en la tarjeta de Copa Voleibol, que tiene 3 imágenes embebidas).
+        className={cn("touch-pan-y", className ?? "aspect-video w-full rounded-xl")}
         style={{ border: 0 }}
       />
       <button
