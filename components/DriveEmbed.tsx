@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Asset } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,14 @@ import { cn } from "@/lib/utils";
 export function DriveEmbed({ asset, className }: { asset: Asset; className?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  // `touch-action: pan-y` (ver abajo) no alcanza solo en iOS Safari: no respeta de forma
+  // confiable el touch-action del padre en iframes de otro origen, así que el visor de Drive se
+  // queda con el gesto de arrastre y la página no scrollea (tarjeta de Copa Voleibol, con 3
+  // imágenes embebidas). Mientras no está `activated`, el iframe no recibe toques en absoluto
+  // (`pointer-events: none`): el arrastre nunca llega a Drive y scrollea la página como
+  // cualquier otro contenido. El primer toque activa el embed para poder interactuar con él.
+  const [activated, setActivated] = useState(false);
+
   return (
     <div className="relative">
       <iframe
@@ -19,15 +27,35 @@ export function DriveEmbed({ asset, className }: { asset: Asset; className?: str
         title={asset.label}
         allow="autoplay; fullscreen"
         allowFullScreen
-        // `touch-pan-y`: sin esto, al arrastrar el dedo sobre el iframe en mobile el visor de
-        // Drive decide si consume el gesto antes de dejarlo pasar, y la página se traba sin
-        // scrollear (reportado en la tarjeta de Copa Voleibol, que tiene 3 imágenes embebidas).
         className={cn("touch-pan-y", className ?? "aspect-video w-full rounded-xl")}
-        style={{ border: 0 }}
+        style={{ border: 0, pointerEvents: activated ? "auto" : "none" }}
       />
+      {!activated && (
+        <button
+          type="button"
+          onClick={() => setActivated(true)}
+          aria-label={`Activar ${asset.label}`}
+          className="absolute inset-0 grid place-items-center bg-black/10"
+        >
+          <span className="grid size-12 place-items-center rounded-full border border-bone/40 bg-black/70 text-bone backdrop-blur">
+            {asset.kind === "video" ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 size-5" aria-hidden>
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-5" aria-hidden>
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+            )}
+          </span>
+        </button>
+      )}
       <button
         type="button"
-        onClick={() => iframeRef.current?.requestFullscreen()}
+        onClick={() => {
+          setActivated(true);
+          iframeRef.current?.requestFullscreen();
+        }}
         aria-label="Pantalla completa"
         className="absolute bottom-2 right-2 grid size-8 place-items-center rounded-full border border-bone/30 bg-black/70 text-bone backdrop-blur transition-colors hover:bg-bone hover:text-black"
       >
