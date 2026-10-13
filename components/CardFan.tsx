@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { FanTile, toneFor, type FanItem } from "./FanTile";
+import { useLanguage } from "@/lib/i18n";
+import { FanTile, localizedRingLabel, toneFor, type FanItem } from "./FanTile";
 import { MeRing } from "./MeRing";
 
 // Abanico de la referencia: un arco con las tarjetas (grupos, perfil y contacto).
@@ -25,9 +26,25 @@ const SPREAD_DEG = 30;
 export function CardFan({ items, onOpen }: { items: FanItem[]; onOpen: (item: FanItem) => void }) {
   // El índice y el ángulo van con la etiqueta: el índice abre espacio en las vecinas,
   // el ángulo hace que la flecha del anillo gire hacia la tarjeta activa.
-  const [active, setActive] = useState<{ index: number; label: string; angle: number } | null>(null);
+  // Guarda el `item` entero (no el texto ya resuelto): así, si el idioma cambia mientras el
+  // cursor sigue sobre una tarjeta, el anillo se actualiza solo en el próximo render en vez de
+  // quedar con el texto del idioma anterior hasta el próximo hover.
+  const [active, setActive] = useState<{ index: number; item: FanItem; angle: number } | null>(null);
+  const { lang } = useLanguage();
   const wheelRef = useRef<HTMLDivElement>(null);
   const swayRef = useRef<gsap.core.Tween | null>(null);
+  // El abanico se monta justo al revelar el portafolio, en el mismo lugar donde estaba el
+  // botón "Revelar" — el cursor suele quedar parado ahí mismo, sobre una tarjeta recién
+  // aparecida, y el navegador dispara su `mouseenter` sin que el usuario haya movido el mouse.
+  // `armed` arranca en falso y solo pasa a verdadero con el primer `mousemove` real de la
+  // ventana (una sola vez): hasta entonces, el hover de las tarjetas se ignora.
+  const [armed, setArmed] = useState(false);
+
+  useEffect(() => {
+    const arm = () => setArmed(true);
+    window.addEventListener("mousemove", arm, { once: true });
+    return () => window.removeEventListener("mousemove", arm);
+  }, []);
 
   useEffect(() => {
     const wheel = wheelRef.current;
@@ -113,8 +130,9 @@ export function CardFan({ items, onOpen }: { items: FanItem[]; onOpen: (item: Fa
                 className="absolute h-full"
                 style={style}
                 onMouseEnter={() => {
+                  if (!armed) return;
                   pause();
-                  setActive({ index: i, label: item.label, angle });
+                  setActive({ index: i, item, angle });
                 }}
                 onMouseLeave={() => {
                   play();
@@ -128,7 +146,7 @@ export function CardFan({ items, onOpen }: { items: FanItem[]; onOpen: (item: Fa
 
         {/* Justo debajo de las tarjetas. Sin nada en hover, la flecha apunta al perfil (270°, "arriba"). */}
         <div className="absolute left-1/2 -translate-x-1/2" style={{ top: RING_TOP }}>
-          <MeRing label={active?.label ?? null} angle={active?.angle ?? 270} />
+          <MeRing label={active ? localizedRingLabel(active.item, lang) : null} angle={active?.angle ?? 270} />
         </div>
       </div>
     </div>

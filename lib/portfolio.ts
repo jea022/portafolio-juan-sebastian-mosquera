@@ -51,6 +51,9 @@ export type ProjectMetrics = {
 export type Project = {
   slug: string;
   title: string;
+  // Texto del anillo central en escritorio (`MeRing`), cuando el título completo no entra bien
+  // ahí (líneas separadas con "\n"). Si falta, el anillo usa `title` tal cual.
+  ringLabel?: string;
   assets: Asset[];
   // Métricas reales de resultado, cuando existen. No se inventan cifras.
   metrics?: ProjectMetrics;
@@ -68,7 +71,8 @@ export type Project = {
 export const PROJECTS: Project[] = [
   {
     slug: "copa-voleibol",
-    title: "Copa Internacional de Voleibol, Santiago de Cali 2026",
+    title: "Copa Inter. de Voleibol, Santiago de Cali 2026",
+    ringLabel: "Copa\nInternacional\nde Voleibol",
     logo: "/logos/copa-voleibol.png",
     assets: [
       { kind: "video", driveId: "1lhzjxU9j06rBCHg5bAKisMDtfJiHUj9v", label: "Recap del último día" },
@@ -160,7 +164,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "presentaciones-corporativas",
-    title: "Presentaciones Corporativas",
+    title: "Present. Corporativas",
     logo: "/logos/presentaciones-corporativas.png",
     assets: [
       { kind: "pdf", driveId: "1RbhKCMvrpi2PtFlfOYNxMWmClWd3FFE0", label: "Qienergy" },
@@ -246,7 +250,7 @@ export const PROJECTS: Project[] = [
 ];
 
 // Datos de contacto reales del cliente. Los que falten quedan en null y el modal muestra "Pendiente".
-export type ContactKey = "correo" | "telefono" | "whatsapp" | "linkedin" | "instagram" | "ubicacion";
+export type ContactKey = "correo" | "telefono" | "whatsapp" | "linkedin" | "ubicacion";
 
 // Orden de este array = orden en mobile (una sola columna, `Explorer.tsx` lo recorre tal
 // cual). El de escritorio (2 columnas) ya no depende de este orden: se arma aparte, a mano,
@@ -263,11 +267,71 @@ export const CONTACT: { label: string; key: ContactKey; value: string | null; hr
     value: "/in/sebastián-mosquera",
     href: "https://www.linkedin.com/in/sebasti%C3%A1n-mosquera-816367417/",
   },
-  { label: "Instagram", key: "instagram", value: "@sebas.107", href: "https://www.instagram.com/sebas.107" },
 ];
 
 // Columnas del contacto en escritorio: primera solo correo + mapa, segunda el resto.
 export const CONTACT_COLUMNS: ContactKey[][] = [
   ["correo", "ubicacion"],
-  ["telefono", "whatsapp", "linkedin", "instagram"],
+  ["telefono", "whatsapp", "linkedin"],
 ];
+
+// Datos de la tarjeta de perfil (modal "Perfil" de `Explorer.tsx`, pasada 51). Fuente: bio que
+// pasó el cliente (reescrita en tono de portafolio, no copiada literal) y su perfil de LinkedIn
+// (captura de la sección "Educación"/"Licencias y certificaciones", 2026-10-13) para `formacion`.
+export type FormacionItem = {
+  titulo: string;
+  institucion: string;
+  periodo?: string;
+};
+
+// Una por herramienta. `logo` queda sin asignar hasta que se consigan los íconos oficiales
+// (pendiente, ver PLAN.md pasada 51): mientras tanto el perfil muestra el nombre solo.
+export type ToolItem = {
+  name: string;
+  logo?: string;
+};
+
+export type ProfileData = {
+  // Un string por párrafo (antes uno solo): el usuario pidió separar la bio en dos.
+  bio: string[];
+  skills: string[];
+  formacion: FormacionItem[];
+  herramientas: ToolItem[];
+};
+
+export const PROFILE: ProfileData = {
+  bio: [
+    "Profesional en Mercadeo y Negocios Internacionales, con un perfil creativo y proactivo que encuentra en cada proyecto una oportunidad de mejora continua. El trabajo conecta la estrategia de contenidos con los objetivos comerciales de cada marca: desde la idea inicial hasta la pieza terminada, pensando a la vez en lo que necesita la audiencia y en lo que necesita el negocio.",
+    "Incluye la gestión integral de redes sociales y la producción de piezas audiovisuales dinámicas para plataformas digitales, apoyada en un dominio operativo de las herramientas que hacen posible ese proceso de punta a punta.",
+  ],
+  skills: [
+    "Estrategia de contenidos orientada a objetivos comerciales",
+    "Gestión integral de redes sociales",
+    "Producción y edición audiovisual dinámica",
+    "Conceptualización y dirección de arte visual",
+    "Planificación y organización de calendarios editoriales",
+    "Pensamiento creativo aplicado a marca",
+    "Proactividad y compromiso con la mejora continua",
+  ],
+  formacion: [
+    {
+      titulo: "Mercadólogo — Mercadeo y Negocios Internacionales",
+      institucion: "Universidad de San Buenaventura Cali",
+      periodo: "2022 – Actualidad",
+    },
+    {
+      titulo: "Diplomado en Marketing y Ventas 5.0: Conectando con la Estrategia, la Tecnología y el Cliente",
+      institucion: "Universidad de San Buenaventura Cali",
+      periodo: "jun. 2026",
+    },
+    {
+      titulo: "Certificado de inglés C1",
+      institucion: "Learn English, Cali",
+    },
+  ],
+  herramientas: [
+    { name: "CapCut" },
+    { name: "Canva" },
+    { name: "Notion" },
+  ],
+};

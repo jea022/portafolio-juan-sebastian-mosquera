@@ -1,29 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useT } from "@/lib/i18n";
 
 // Cali, Colombia está en America/Bogota: GMT-5 todo el año, sin horario de verano.
 // Se usa Intl con esa zona horaria para que la hora sea la real de la ciudad,
 // sin importar en qué horario esté quien mira la página.
 const CITY_TIMEZONE = "America/Bogota";
 
-// Mosaico 2x2 de mosaicos (tiles) de OpenStreetMap, centrado al sur de Cali, entre los
-// barrios Valle del Lili y Ciudad Jardín (coordenadas aproximadas: 3.335 N, -76.533 O).
-// Es la fuente de mapas pública y sin clave de API (mismo criterio que el mapa de Google
-// sin API key de Landing multisección). Se usan como imágenes fijas, sin los controles de
-// zoom ni el visor interactivo del embed anterior, que se veían como un mapa de Google.
+// Mosaico 2x2 de mosaicos (tiles) de OpenStreetMap. Es la fuente de mapas pública y sin clave
+// de API (mismo criterio que el mapa de Google sin API key de Landing multisección). Se usan
+// como imágenes fijas, sin los controles de zoom ni el visor interactivo del embed anterior,
+// que se veían como un mapa de Google.
+//
+// Punto real (pasada 57): el cliente mandó una captura de Google Maps marcando "Salchimonster
+// Bochalema Cali" como referencia de la zona. Coordenadas reales buscadas en Google Maps
+// (no inventadas): 3.3609805 N, -76.5160813 O. Convertidas a tiles de Slippy Map en zoom 14
+// (mismo zoom que ya tenía el mapa, pasada 23): x=4709.67, y=8038.95 → cae en el tile [4709,
+// 8038], así que la ventana de 2x2 arranca un tile antes en cada eje para dejarlo adentro.
 const TILE_Z = 14;
-// Antes [4709, 4710]: la ventana se corrió un tile hacia el oeste (izquierda) para que se vea
-// más ciudad, sin mover el punto real (sigue en el mismo tile 4709, ahora el segundo del par).
 const TILE_X = [4708, 4709];
-const TILE_Y = [8039, 8040];
-// Posición del punto dentro del mosaico de 2x2. Recalculada para la nueva ventana: la fracción
-// es relativa al ancho total (2 tiles), no al centro geométrico del recorte.
-const MARKER_LEFT = "74%";
-const MARKER_TOP = "35%";
+const TILE_Y = [8038, 8039];
+// Posición del punto dentro del mosaico de 2x2: fracción del tile real sobre el ancho/alto
+// total (2 tiles), no una ubicación a ojo. (xtile - TILE_X[0]) / 2 y (ytile - TILE_Y[0]) / 2.
+const MARKER_LEFT = "83.4%";
+const MARKER_TOP = "47.5%";
 
-export function LocationCard({ city }: { city: string }) {
+export function LocationCard({ city, className = "h-56" }: { city: string; className?: string }) {
   const [time, setTime] = useState<string | null>(null);
+  const t = useT();
 
   useEffect(() => {
     const update = () => {
@@ -42,7 +47,7 @@ export function LocationCard({ city }: { city: string }) {
   }, []);
 
   return (
-    <div className="relative flex h-56 flex-col justify-end overflow-hidden rounded-2xl border-2 border-bone/30 p-4">
+    <div className={`relative flex ${className} flex-col justify-end overflow-hidden rounded-2xl border-2 border-bone/30 p-4`}>
       {/* Mosaico de mapa real de Cali (OpenStreetMap). Totalmente blanco y negro: `grayscale`
           quita el color y `invert` deja el fondo negro con las calles en blanco. */}
       <div
@@ -62,7 +67,7 @@ export function LocationCard({ city }: { city: string }) {
               alt=""
               width={256}
               height={256}
-              style={{ width: "100%", height: "100%", maxWidth: "none", objectFit: "cover" }}
+              style={{ display: "block", width: "100%", height: "100%", maxWidth: "none", objectFit: "cover" }}
             />
           )),
         )}
@@ -87,7 +92,7 @@ export function LocationCard({ city }: { city: string }) {
       <div className="relative">
         <p className="font-display text-xl uppercase leading-tight">{city}</p>
         <p className="mt-1 font-mono text-xs uppercase tracking-widest text-bone/70">
-          {time ?? "--:--"} GMT-5 · Hora local
+          {time ?? "--:--"} GMT-5 · {t("horaLocal")}
         </p>
       </div>
     </div>

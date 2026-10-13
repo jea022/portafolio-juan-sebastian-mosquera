@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Space_Mono, Syne } from "next/font/google";
+import { LanguageContentWrapper } from "@/components/LanguageContentWrapper";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { LanguageProvider } from "@/lib/i18n";
 import { withBasePath } from "@/lib/utils";
 import "./globals.css";
 
@@ -18,7 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${syne.variable} ${bricolage.variable} ${spaceMono.variable}`}>
       <body style={{ "--bg-image": `url(${withBasePath("/textures/fondo-textura.jpg")})` } as React.CSSProperties}>
-        {children}
+        <LanguageProvider>
+          <LanguageContentWrapper>{children}</LanguageContentWrapper>
+          <LanguageToggle />
+        </LanguageProvider>
       </body>
     </html>
   );

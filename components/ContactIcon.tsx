@@ -23,13 +23,6 @@ const PATHS: Record<ContactKey, React.ReactNode> = {
       <path d="M7.5 10.5v6M7.5 7.8v.01M12 16.5v-3.6c0-1.3.9-2.4 2.3-2.4 1.3 0 2.2 1 2.2 2.4v3.6" />
     </>
   ),
-  instagram: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17" cy="7" r="0.8" fill="currentColor" stroke="none" />
-    </>
-  ),
   ubicacion: (
     <>
       <path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z" />
@@ -38,21 +31,20 @@ const PATHS: Record<ContactKey, React.ReactNode> = {
   ),
 };
 
-// Colores por canal: marca real para WhatsApp, LinkedIn e Instagram; a nuestro criterio
-// para correo, teléfono y ubicación. Todos verificados contra WCAG 1.4.11 (3:1 mínimo
+// Colores por canal: marca real para WhatsApp y LinkedIn; a nuestro criterio para
+// correo, teléfono y ubicación. Todos verificados contra WCAG 1.4.11 (3:1 mínimo
 // para íconos, no el 4.5:1 de texto).
 export const CONTACT_TONE: Record<ContactKey, { bg: string; icon: string }> = {
   correo: { bg: "bg-amber-600", icon: "text-white" },
   telefono: { bg: "bg-sky-600", icon: "text-white" },
   whatsapp: { bg: "bg-[#128C7E]", icon: "text-white" }, // verde azulado oficial de WhatsApp
   linkedin: { bg: "bg-[#0A66C2]", icon: "text-white" }, // azul oficial de LinkedIn
-  instagram: { bg: "bg-gradient-to-tr from-[#FEDA75] via-[#D62976] to-[#4F5BD5]", icon: "text-white" },
   ubicacion: { bg: "bg-violet-500", icon: "text-white" },
 };
 
 export function ContactIcon({ name }: { name: ContactKey }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-5" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-6" aria-hidden>
       {PATHS[name]}
     </svg>
   );

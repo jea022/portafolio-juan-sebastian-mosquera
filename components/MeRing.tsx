@@ -33,8 +33,11 @@ export function MeRing({ label, angle = 270 }: { label?: string | null; angle?: 
           <path d="M6 11l6-6 6 6" />
         </svg>
         <span
+          // `whitespace-pre-line`: respeta los saltos de línea ("\n") que algunos proyectos
+          // definen a mano en `ringLabel` (`lib/portfolio.ts`) cuando el ajuste automático del
+          // título completo no queda bien acá. Sin esto el "\n" se ignora como un espacio más.
           className={cn(
-            "leading-tight",
+            "whitespace-pre-line leading-tight",
             (label?.length ?? 0) > 30 ? "text-[9px]" : (label?.length ?? 0) > 18 ? "text-xs" : "text-sm",
           )}
         >

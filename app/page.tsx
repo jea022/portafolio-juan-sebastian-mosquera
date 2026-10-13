@@ -1,4 +1,6 @@
 import { Explorer } from "@/components/Explorer";
+import { HeroEyebrow } from "@/components/HeroEyebrow";
+import { HeroMeta } from "@/components/HeroMeta";
 import { HeroTitle } from "@/components/HeroTitle";
 import { PortfolioGate } from "@/components/PortfolioGate";
 
@@ -14,9 +16,7 @@ export default function Home() {
         <Cross className="bottom-3 left-3" />
         <Cross className="bottom-3 right-3" />
 
-        <div className="flex items-start justify-between font-mono text-xs uppercase tracking-widest">
-          <span>Welcome to my</span>
-        </div>
+        <HeroEyebrow />
 
         <div className="relative flex justify-center py-10">
           <div aria-hidden className="absolute inset-y-[-12%] left-1/2 w-[16%] -translate-x-1/2 rounded-2xl bg-crimson" />
@@ -32,10 +32,7 @@ export default function Home() {
             `flex-col` en el breakpoint base: en celulares angostos el nombre completo y el rol
             no entran uno al lado del otro y quedaban pegados sin espacio ("MOSQUERACOMMUNITY");
             en `sm:` sí entran en una fila con `justify-between` como antes. */}
-        <div className="mt-10 flex flex-col gap-1 font-mono text-xs uppercase tracking-widest sm:mt-4 sm:flex-row sm:justify-between sm:gap-0">
-          <span>Juan Sebastian Mosquera</span>
-          <span>Community manager</span>
-        </div>
+        <HeroMeta />
       </section>
 
       <section className="relative overflow-hidden py-6">

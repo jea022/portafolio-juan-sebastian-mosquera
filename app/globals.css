@@ -13,8 +13,15 @@
 }
 
 /* La imagen la pone `layout.tsx` como variable inline (`--bg-image`), con el basePath de
-   GitHub Pages ya resuelto: un `url()` de CSS puro no puede leer `process.env`. */
+   GitHub Pages ya resuelto: un `url()` de CSS puro no puede leer `process.env`. `min-height`
+   para que el fondo cubra toda la pantalla incluso cuando el contenido mide menos que el alto
+   del viewport (pasa en mobile, por ejemplo con el carrusel): sin esto, debajo del contenido
+   quedaba un bloque negro liso en vez de la textura, porque el fondo solo pinta hasta donde
+   llega la caja del `body`. `100dvh` (altura dinámica) además de `100vh` porque en Safari de
+   celular la barra de direcciones cambia el alto real del viewport al hacer scroll. */
 body {
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-black) var(--bg-image) center / cover no-repeat fixed;
   color: var(--color-bone);
   font-family: var(--font-body);
@@ -44,6 +51,34 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .shine-border-glow {
     animation: none !important;
+  }
+}
+
+/* Transición al cambiar de idioma (`LanguageContentWrapper.tsx`): un fundido breve y sutil
+   sobre todo el contenido, para que el cambio de texto se sienta intencional en vez de un
+   parpadeo. No desmonta nada, es puramente visual. Antes llevaba blur(6px) y bajaba la
+   opacidad a 0.2 a mitad de camino: se veía como un apagón completo de la pantalla (reportado
+   por el usuario con una captura), así que se sacó el blur y el mínimo de opacidad quedó en
+   0.85, apenas perceptible. */
+@keyframes lang-switch-flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.lang-switch-flash {
+  animation: lang-switch-flash 0.3s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-switch-flash {
+    animation: none;
   }
 }
 

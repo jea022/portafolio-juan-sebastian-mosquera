@@ -5,10 +5,12 @@ export function GrowthChart({
   series,
   yTicks,
   xLabels,
+  ariaLabel = "Crecimiento de visualizaciones durante el mes de campaña",
 }: {
   series: GrowthPoint[];
   yTicks: { value: number; label: string }[];
   xLabels: { day: number; label: string }[];
+  ariaLabel?: string;
 }) {
   const width = 600;
   const height = 200;
@@ -29,7 +31,7 @@ export function GrowthChart({
   const areaPath = `${linePath} L${x(series[series.length - 1].day).toFixed(1)},${y(0).toFixed(1)} L${x(series[0].day).toFixed(1)},${y(0).toFixed(1)} Z`;
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="w-full" role="img" aria-label="Crecimiento de visualizaciones durante el mes de campaña">
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full" role="img" aria-label={ariaLabel}>
       {yTicks.map((t) => (
         <g key={t.value}>
           <line x1={padLeft} x2={width - padRight} y1={y(t.value)} y2={y(t.value)} stroke="var(--color-bone)" strokeOpacity={0.12} />
