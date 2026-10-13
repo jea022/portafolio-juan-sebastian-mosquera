@@ -301,24 +301,24 @@ function ContactRow({
   const label = lang === "en" ? (CONTACT_LABELS_EN[row.label] ?? row.label) : row.label;
   return (
     <li className={cn("flex items-center gap-4 rounded-2xl border-2 border-bone/30 p-4", minHeight)}>
-      <span className={`grid size-12 shrink-0 place-items-center rounded-xl ${tone.bg} ${tone.icon}`}>
+      <span className={`grid size-10 shrink-0 place-items-center rounded-xl sm:size-12 ${tone.bg} ${tone.icon}`}>
         <ContactIcon name={row.key} />
       </span>
       <span className="flex flex-col">
-        <span className="font-mono text-xs uppercase tracking-widest text-bone/60">{label}</span>
+        <span className="font-mono text-[10px] uppercase tracking-widest text-bone/60 sm:text-xs">{label}</span>
         {row.value ? (
           row.href ? (
             preview ? (
-              <LinkPreview url={row.href} className="font-body text-lg underline-offset-4 hover:underline">
+              <LinkPreview url={row.href} className="font-body text-base underline-offset-4 hover:underline sm:text-lg">
                 {row.value}
               </LinkPreview>
             ) : (
-              <a href={row.href} className="font-body text-lg underline-offset-4 hover:underline">
+              <a href={row.href} className="font-body text-base underline-offset-4 hover:underline sm:text-lg">
                 {row.value}
               </a>
             )
           ) : (
-            <span className="font-body text-lg">{row.value}</span>
+            <span className="font-body text-base sm:text-lg">{row.value}</span>
           )
         ) : (
           <span className="font-mono text-xs uppercase text-crimson">{t("pendiente")}</span>

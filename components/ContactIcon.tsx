@@ -44,7 +44,7 @@ export const CONTACT_TONE: Record<ContactKey, { bg: string; icon: string }> = {
 
 export function ContactIcon({ name }: { name: ContactKey }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-6" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-5 sm:size-6" aria-hidden>
       {PATHS[name]}
     </svg>
   );
